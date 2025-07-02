@@ -104,46 +104,15 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import precision_score, balanced_accuracy_score, recall_score, f1_score, confusion_matrix
 
-# -*- coding: utf-8 -*-
-# flake8: noqa
-
-# --- Importación de librerías necesarias ---
-import pandas as pd
-import os
-import gzip
-import pickle
-import json
-from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.metrics import precision_score, balanced_accuracy_score, recall_score, f1_score, confusion_matrix
 
 
 def cargar_dataset(ruta: str) -> pd.DataFrame:
-    """
-    Carga un dataset desde un archivo CSV comprimido en formato .zip.
-
-    Args:
-        ruta (str): La ruta completa al archivo .csv.zip.
-
-    Returns:
-        pd.DataFrame: Un DataFrame de pandas con los datos cargados.
-    """
+    
     return pd.read_csv(ruta, index_col=False, compression="zip")
 
 
 def limpiar_dataset(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """
-    Realiza la limpieza del dataset según los requisitos del problema.
-
-    Args:
-        dataframe (pd.DataFrame): El DataFrame original que se va a limpiar.
-
-    Returns:
-        pd.DataFrame: El DataFrame limpio.
-    """
+    
     # 1. Renombrar la columna objetivo para que sea más simple.
     dataframe = dataframe.rename(columns={"default payment next month": "default"})
     
@@ -245,17 +214,7 @@ def guardar_modelo(estimador: GridSearchCV, ruta: str):
 
 
 def calcular_metricas_precision(nombre_dataset: str, y_real, y_predicho) -> dict:
-    """
-    Calcula un conjunto de métricas de clasificación.
-
-    Args:
-        nombre_dataset (str): "train" o "test", para identificar el conjunto de datos.
-        y_real: Los valores verdaderos de la variable objetivo.
-        y_predicho: Las predicciones del modelo.
-
-    Returns:
-        dict: Un diccionario con las métricas calculadas.
-    """
+    
     return {
         "type": "metrics",
         "dataset": nombre_dataset,
@@ -267,17 +226,7 @@ def calcular_metricas_precision(nombre_dataset: str, y_real, y_predicho) -> dict
 
 
 def calcular_metricas_confusion(nombre_dataset: str, y_real, y_predicho) -> dict:
-    """
-    Calcula la matriz de confusión y la devuelve en el formato requerido.
-
-    Args:
-        nombre_dataset (str): "train" o "test", para identificar el conjunto de datos.
-        y_real: Los valores verdaderos de la variable objetivo.
-        y_predicho: Las predicciones del modelo.
-
-    Returns:
-        dict: Un diccionario representando la matriz de confusión.
-    """
+    
     matriz_confusion = confusion_matrix(y_real, y_predicho)
     return {
         "type": "cm_matrix",
@@ -288,20 +237,15 @@ def calcular_metricas_confusion(nombre_dataset: str, y_real, y_predicho) -> dict
 
 
 def principal():
-    """
-    Función principal que orquesta todo el proceso de carga, entrenamiento y evaluación.
-    """
-    # --- 1. Definición de Rutas ---
+    
     ruta_archivos_entrada = "files/input/"
     ruta_archivos_modelos = "files/models/"
     ruta_archivos_salida = "files/output/"
 
-    # --- 2. Carga de Datos ---
     print("Cargando datasets...")
     df_prueba = cargar_dataset(os.path.join(ruta_archivos_entrada, "test_data.csv.zip"))
     df_entrenamiento = cargar_dataset(os.path.join(ruta_archivos_entrada, "train_data.csv.zip"))
 
-    # --- 3. Limpieza de Datos ---
     print("Limpiando datasets...")
     df_prueba_limpio = limpiar_dataset(df_prueba)
     df_entrenamiento_limpio = limpiar_dataset(df_entrenamiento)
